@@ -1,10 +1,14 @@
 let LocalStrategy = require('passport-local').Strategy;
-let bcrypt = require('bcrypt')
-let models = require('./models')
+let bcrypt = require('bcrypt');
+const models = require('./models');
+const passport = require('passport');
+let flash = require('connect-flash');
+
 
 const validPassword = function(user,password){
 	return bcrypt.compareSync(password,user.password)
 } 
+
 
 module.exports = function(passport){
 	passport.serializeUser(function(user,done){
@@ -25,7 +29,7 @@ module.exports = function(passport){
 	passport.use(new LocalStrategy({
 		usernameField:'email',
 		passwordField:'password',
-		passReqToCalBack : true
+		passReqToCallback : true
 	},
 	function(req,email,password,done){
 		return models.User.findOne({
@@ -34,18 +38,22 @@ module.exports = function(passport){
 			},
 		}).then(user=>{
 			if(user==null){
-				req.flash('message':'Incorrect Credentials.')
-				return done(null,false);
+				req.flash('message','Incorrect Credentials.')
+				return done(null,false,{
+					mesage:'Unknown User'
+				});
 			}else if(user.password==null || user.password == undefined){
-				req.flash('message':'Reset your password')
-				return done(null,false);
-			}else if(!validPassword(User,password)){
-				req.flash('message':'Incorrect Credentials.')
-				return done(null,false);
+				req.flash('message','Reset your password')
+				return done(null,false,{
+					mesage:'Check your password again'
+				});
+			}else if(!validPassword(user,password)){
+				req.flash('message','Incorrect Credentials.')
+				return done(null,false,{
+					mesage:'Invalid User'
+				});
 			}
 			return done(null,user);
-		}).catch(err=>{
-			done(err,false)
 		})
 	}))
 }
