@@ -10,13 +10,12 @@ html(lang='en')
             .row
                 .col-md-6.order-md-1.text-center.text-md-left.pr-md-5
                     h1.mb-3 Welcome to the Blog App
-                    p.lead  Sign up and create amazing Blogs
-                    p.lead.mb-4 These blogs can be editted and deleted as per your choice
+                    p.lead.mb-4 Add new Blogs Here!!
                     form(action="/", method="POST")
                         .input-group.mb-3
                             input(name="lead_email", type="email", placeholder="Enter your email address").form-control
                             .input-group-append
-                                button(type="submit").btn.btn-primary Get Started          
+                                button(type="submit").btn.btn-primary Upload          
         include common/footer.pug
         +footer()
         script(src="/javascripts/leads.js") 
